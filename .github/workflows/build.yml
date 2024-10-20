@@ -1,0 +1,62 @@
+name: C++ Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up C++ environment
+      run: sudo apt-get install g++
+
+    - name: Compile the code
+      run: |
+        g++ -o fibonacci fibonacci.cpp
+
+    - name: Run the application
+      run: |
+        echo "Running on Ubuntu"
+        ./fibonacci  12 # For Ubuntu
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: fibonacci-output
+        path: |
+          fibonacci
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up C++ environment
+      run: |
+        choco install mingw  # Assumes you have Chocolatey installed on Windows
+
+    - name: Compile the code
+      run: |
+          g++ -m64 -o fibonacci_windows.exe fibonacci.cpp
+
+
+    - name: Run the application
+      run: |
+        echo "Running on Windows"
+        .\fibonacci_windows.exe  10 # For Windows
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: fibonacci-output-windows
+        path: |
+          fibonacci_windows.exe
